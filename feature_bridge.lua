@@ -6,10 +6,14 @@ function _FeatureBridge:init()
             local px, py, pz = Spring.GetFeaturePosition(objectID)
             return {x = px, y = py, z = pz}
         end,
+        dir = function(objectID)
+            local dirX, dirY, dirZ = Spring.GetFeatureDirection(objectID)
+            return {x = dirX, y = dirY, z = dirZ}
+        end,
         midAimPos = function(objectID)
-            local _, _, _, mpx, mpy, mpz, apx, apy, apz = Spring.GetFeaturePosition(objectID, true, true)
-            return {mid = {x = mpx, y = mpy, z = mpz},
-                    aim = {x = apx, y = apy, z = apz}}
+            local px, py, pz, mpx, mpy, mpz, apx, apy, apz = Spring.GetFeaturePosition(objectID, true, true)
+            return {mid = {x = mpx - px, y = mpy - py, z = mpz - pz},
+                    aim = {x = apx - px, y = apy - py, z = apz - pz}}
         end,
         blocking = function(objectID)
             local isBlocking, isSolidObjectCollidable, isProjectileCollidable,
@@ -40,23 +44,13 @@ function _FeatureBridge:init()
         health = function(objectID)
             return Spring.GetFeatureHealth(objectID)
         end,
-        maxHealth = function(objectID)
-            local _, maxHealth = Spring.GetFeatureHealth(objectID)
-            return maxHealth
-        end,
-        stockpile = function(objectID)
-            return Spring.GetFeatureStockpile(objectID)
-        end,
-        experience = function(objectID)
-            return Spring.GetFeatureExperience(objectID)
-        end,
-        neutral = function(objectID)
-            return Spring.GetFeatureNeutral(objectID)
-        end,
     }
     self.setFuncs = {
         pos = function(objectID, value)
             Spring.SetFeaturePosition(objectID, value.x, value.y, value.z)
+        end,
+        dir = function(objectID, value)
+            Spring.SetFeatureDirection(objectID, value.x, value.y, value.z)
         end,
         midAimPos = function(objectID, value)
             Spring.SetFeatureMidAndAimPos(objectID, value.mid.x, value.mid.y, value.mid.z,
@@ -77,17 +71,10 @@ function _FeatureBridge:init()
         health = function(objectID, value)
             Spring.SetFeatureHealth(objectID, value)
         end,
-        maxHealth = function(objectID, value)
-            Spring.SetFeatureMaxHealth(objectID, value)
-        end,
-        stockpile = function(objectID, value)
-            Spring.SetFeatureStockpile(objectID, value)
-        end,
-        experience = function(objectID, value)
-            Spring.SetFeatureExperience(objectID, value)
-        end,
-        neutral = function(objectID, value)
-            Spring.SetFeatureFuel(objectID, value)
-        end,
     }
+end
+
+function _FeatureBridge:CreateObject(object)
+    local objectID = Spring.CreateFeature(object.defName, object.pos.x, object.pos.y, object.pos.z)
+    return objectID
 end

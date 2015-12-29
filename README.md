@@ -20,13 +20,12 @@ s11n:Get({objectID1, objectID2}, "health") -> { objectID1 = number, objectID2 = 
 s11n:Get({objectID1, objectID2}, {"health", "maxHealth"}) -> { objectID1 = { health = number, maxHealth = number }, objectID2 = { health = number, maxHealth = number }}
 s11n:Get({objectID1, objectID2}) -> { objectID1 = { k1 = v1, k2 = v2, ... kn = vn}, objectID2 = { k1 = v1, k2 = v2, ... kn = vn} }
 
-s11n:Set(values)
 s11n:Set(objectIDs, name, values)
 s11n:Set(objectIDs, fields)
+s11n:Set(objects)
 
 s11n:Set(objectID, "health", value)
 s11n:Set(objectID, { health = number, maxHealth = number })
-s11n:Set(objectID, {"health", "maxHealth"}, { number, number })
 s11n:Set({ objectID1 = { health = number, maxHealth = number },
            objectID2 = { health = number, maxHealth = number }}
 ```
