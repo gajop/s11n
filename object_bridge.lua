@@ -47,7 +47,16 @@ function _ObjectBridge:Get(...)
     local params = {...}
     local objectID = params[1]
     if #params == 1 then
-        return self:_GetAllFields(objectID)
+        if type(params[1]) ~= "table" then
+            return self:_GetAllFields(objectID)
+        else
+            local objectIDs = params[1]
+            local ret = {}
+            for _, objectID in pairs(objectIDs) do
+                ret[objectID] = self:_GetAllFields(objectID)
+            end
+            return ret
+        end
     elseif #params == 2 then
         if type(params[2]) ~= "table" then
             local name = params[2]

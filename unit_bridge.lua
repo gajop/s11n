@@ -210,6 +210,16 @@ function _UnitBridge:init()
         armored = function(objectID, value)
             Spring.SetUnitArmored(objectID, value.armored, value.armorMultiple)
         end,
+        gravity = function(objectID, value)
+            Spring.MoveCtrl.SetGravity(objectID, value)
+        end,
+        movectrl = function(objectID, value)
+            if value then
+                Spring.MoveCtrl.Enable(objectID)
+            else
+                Spring.MoveCtrl.Disable(objectID)
+            end
+        end
     }
 end
 
