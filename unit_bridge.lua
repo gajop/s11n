@@ -10,6 +10,11 @@ function _UnitBridge:init()
             local dirX, dirY, dirZ = Spring.GetUnitDirection(objectID)
             return {x = dirX, y = dirY, z = dirZ}
         end,
+        rot = function(objectID)
+            local x, y, z = Spring.GetUnitRotation(objectID)
+-- 			Spring.Echo("GetUnitRotation", objectID, x, y, z)
+            return {x = x, y = y, z = z}
+        end,
         midAimPos = function(objectID)
             local px, py, pz, mpx, mpy, mpz, apx, apy, apz = Spring.GetUnitPosition(objectID, true, true)
             return {mid = {x = mpx - px, y = mpy - py, z = mpz - pz},
@@ -71,8 +76,12 @@ function _UnitBridge:init()
         end,
         rules = function(objectID)
             local ret = {}
-            for rule, value in pairs(Spring.GetUnitRulesParams(objectID)) do
-                ret[rule] = value
+            for _, foo in pairs(Spring.GetUnitRulesParams(objectID)) do
+                if type(foo) == "table" then
+                    for rule, value in pairs(foo) do
+                        ret[rule] = value
+                    end
+                end
             end
             return ret
         end,
@@ -113,6 +122,11 @@ function _UnitBridge:init()
         end,
         dir = function(objectID, value)
             Spring.SetUnitDirection(objectID, value.x, value.y, value.z)
+        end,
+        rot = function(objectID, value)
+-- 			value.x, value.y = value.y, value.x
+-- 			Spring.Echo("SetUnitRotation", objectID, value.x, value.y, value.z)
+            Spring.SetUnitRotation(objectID, value.x, value.y, value.z)
         end,
         midAimPos = function(objectID, value)
             Spring.SetUnitMidAndAimPos(objectID, value.mid.x, value.mid.y, value.mid.z,
@@ -190,12 +204,8 @@ function _UnitBridge:init()
             Spring.SetUnitLosState(objectID, 0, value)
         end,
         rules = function(objectID, value)
-            for _, foo in pairs(value) do
-                if type(foo) == "table" then
-                    for rule, value in pairs(foo) do
-                        Spring.SetUnitRulesParam(objectID, rule, value)
-                    end
-                end
+            for ruleName, ruleValue in pairs(value) do
+                Spring.SetUnitRulesParam(objectID, ruleName, ruleValue)
             end
         end,
         commands = function(objectID, value)

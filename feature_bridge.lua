@@ -10,6 +10,10 @@ function _FeatureBridge:init()
             local dirX, dirY, dirZ = Spring.GetFeatureDirection(objectID)
             return {x = dirX, y = dirY, z = dirZ}
         end,
+        rot = function(objectID)
+            local x, y, z = Spring.GetFeatureRotation(objectID)
+            return {x = x, y = y, z = z}
+        end,
         midAimPos = function(objectID)
             local px, py, pz, mpx, mpy, mpz, apx, apy, apz = Spring.GetFeaturePosition(objectID, true, true)
             return {mid = {x = mpx - px, y = mpy - py, z = mpz - pz},
@@ -51,6 +55,9 @@ function _FeatureBridge:init()
         end,
         dir = function(objectID, value)
             Spring.SetFeatureDirection(objectID, value.x, value.y, value.z)
+        end,
+        rot = function(objectID, value)
+            Spring.SetFeatureRotation(objectID, value.x, value.y, value.z)
         end,
         midAimPos = function(objectID, value)
             Spring.SetFeatureMidAndAimPos(objectID, value.mid.x, value.mid.y, value.mid.z,

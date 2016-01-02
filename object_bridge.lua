@@ -8,7 +8,9 @@ end
 function _ObjectBridge:_GetAllFields(objectID)
     local values = {}
     for name, _ in pairs(self.getFuncs) do
-        values[name] = self:_GetField(objectID, name)
+        if name ~= "dir" then -- dir is saved instead of rotation to avoid duplicates
+            values[name] = self:_GetField(objectID, name)
+        end
     end
     return values
 end
@@ -17,14 +19,14 @@ function _ObjectBridge:_SetField(objectID, name, value)
     assert(self.setFuncs[name] ~= nil, "No such field: " .. tostring(name))
     local applyDir = nil
     if name == "pos" then
-        applyDir = self:_GetField(objectID, "dir")
+        applyDir = self:_GetField(objectID, "rot")
     end
     self.setFuncs[name](objectID, value)
     -- ENGINE BUG
     -- If buildings are moved, their direction will be reset.
     -- An additional rotation must be applied after movement.
     if applyDir then
-        self:_SetField(objectID, "dir", applyDir)
+        self:_SetField(objectID, "rot", applyDir)
     end
 end
 
