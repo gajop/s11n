@@ -1,17 +1,68 @@
 _ObjectBridge = LCS.class{}
 
+function _ObjectBridge:init()
+    self.objectDefaults = {} -- cached object defaults
+    self._cacheQueue    = {}
+end
+
 function _ObjectBridge:_GetField(objectID, name)
     assert(self.getFuncs[name] ~= nil, "No such field: " .. tostring(name))
     return self.getFuncs[name](objectID)
 end
 
+function _ObjectBridge:CompareValues(v1, v2)
+    local v1Type, v2Type = type(v1), type(v2)
+    if v1Type ~= v2Type then
+        return false
+    elseif v1Type ~= "table" then
+        return v1 == v2
+    else
+        local kCount1 = 0
+        for k, v in pairs(v1) do
+            kCount1 = kCount1 + 1
+            if not self:CompareValues(v, v2[k]) then
+                return false
+            end
+        end
+        local kCount2 = 0
+        for k, v in pairs(v2) do
+            kCount2 = kCount2 + 1
+        end
+        if kCount1 ~= kCount2 then
+            return false
+        end
+        return true
+    end
+end
+
+function _ObjectBridge:_RemoveDefaults(objectID, values)
+    local defName = self:_GetField(objectID, "defName")
+    local defaults = self.objectDefaults[defName]
+    if defaults then
+        for name, _ in pairs(self.getFuncs) do
+            local default = defaults[name]
+            if default ~= nil then
+                if self:CompareValues(values[name], default) then
+--                     Spring.Echo(name, values[name], default)
+                    values[name] = nil
+--                 else
+--                     Spring.Echo("DIFF", name, values[name], default)
+--                     if type(default) == "table" then
+--                         table.echo({values[name], default})
+--                     end
+                end
+            end
+        end
+    end
+end
+
 function _ObjectBridge:_GetAllFields(objectID)
     local values = {}
     for name, _ in pairs(self.getFuncs) do
-        if name ~= "dir" then -- dir is saved instead of rotation to avoid duplicates
-            values[name] = self:_GetField(objectID, name)
-        end
+        values[name] = self:_GetField(objectID, name)
     end
+    values.dir = nil -- rot is saved instead of dir to avoid duplicates
+    self:_RemoveDefaults(objectID, values)
     return values
 end
 
@@ -41,8 +92,34 @@ end
 
 function _ObjectBridge:Add(object)
     local objectID = self:CreateObject(object)
+
     self:_SetAllFields(objectID, object)
     return objectID
+end
+
+function _ObjectBridge:_CacheObject(objectID)
+    -- cache defaults
+    local defName = self:_GetField(objectID, "defName")
+    local defaults = self.objectDefaults[defName]
+    if not defaults then
+        defaults = self:_GetAllFields(objectID)
+        -- these fields don't have defaults
+        defaults.pos = nil
+        defaults.defName = nil
+        defaults.team = nil
+        self.objectDefaults[defName] = defaults
+    end
+end
+
+function _ObjectBridge:_ObjectCreated(objectID)
+    table.insert(self._cacheQueue, objectID)
+end
+
+function _ObjectBridge:_GameFrame()
+    for _, objectID in pairs(self._cacheQueue) do
+        self:_CacheObject(objectID)
+    end
+    self._cacheQueue = {}
 end
 
 function _ObjectBridge:Get(...)
