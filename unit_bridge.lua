@@ -7,6 +7,10 @@ function _UnitBridge:init()
             local px, py, pz = Spring.GetUnitPosition(objectID)
             return {x = px, y = py, z = pz}
         end,
+        vel = function(objectID)
+            local vx, vy, vz = Spring.GetUnitVelocity(objectID)
+            return {x = vx, y = vy, z = vz}
+        end,
         dir = function(objectID)
             local dirX, dirY, dirZ = Spring.GetUnitDirection(objectID)
             return {x = dirX, y = dirY, z = dirZ}
@@ -164,6 +168,9 @@ function _UnitBridge:init()
     self.setFuncs = {
         pos = function(objectID, value)
             Spring.SetUnitPosition(objectID, value.x, value.y, value.z)
+        end,
+        vel = function(objectID, value)
+            Spring.SetUnitVelocity(objectID, value.x, value.y, value.z)
         end,
         dir = function(objectID, value)
             Spring.SetUnitDirection(objectID, value.x, value.y, value.z)
