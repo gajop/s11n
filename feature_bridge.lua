@@ -53,9 +53,9 @@ function _FeatureBridge:init()
         health = function(objectID)
             return Spring.GetFeatureHealth(objectID)
         end,
-        lockPos = function(objectID)
-            return Spring.GetFeatureLockPosition(objectID)
-        end,
+--         lockPos = function(objectID)
+--             return Spring.GetFeatureLockPosition(objectID)
+--         end,
     }
     self.setFuncs = {
         pos = function(objectID, value)
@@ -89,9 +89,9 @@ function _FeatureBridge:init()
         health = function(objectID, value)
             Spring.SetFeatureHealth(objectID, value)
         end,
-        lockPos = function(objectID, value)
-            Spring.SetFeatureLockPosition(objectID, value)
-        end,
+--         lockPos = function(objectID, value)
+--             Spring.SetFeatureLockPosition(objectID, value)
+--         end,
     }
 end
 
