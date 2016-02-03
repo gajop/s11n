@@ -11,6 +11,9 @@ function _FeatureBridge:init()
             local vx, vy, vz = Spring.GetFeatureVelocity(objectID)
             return {x = vx, y = vy, z = vz}
         end,
+        mass = function(objectID)
+            return Spring.GetFeatureMass(objectID)
+        end,
         dir = function(objectID)
             local dirX, dirY, dirZ = Spring.GetFeatureDirection(objectID)
             return {x = dirX, y = dirY, z = dirZ}
@@ -53,9 +56,6 @@ function _FeatureBridge:init()
         health = function(objectID)
             return Spring.GetFeatureHealth(objectID)
         end,
---         lockPos = function(objectID)
---             return Spring.GetFeatureLockPosition(objectID)
---         end,
     }
     self.setFuncs = {
         pos = function(objectID, value)
@@ -63,6 +63,9 @@ function _FeatureBridge:init()
         end,
         vel = function(objectID, value)
             Spring.SetFeatureVelocity(objectID, value.x, value.y, value.z)
+        end,
+        mass = function(objectID, value)
+            Spring.SetFeatureMass(objectID, value)
         end,
         dir = function(objectID, value)
             Spring.SetFeatureDirection(objectID, value.x, value.y, value.z)
@@ -89,9 +92,6 @@ function _FeatureBridge:init()
         health = function(objectID, value)
             Spring.SetFeatureHealth(objectID, value)
         end,
---         lockPos = function(objectID, value)
---             Spring.SetFeatureLockPosition(objectID, value)
---         end,
     }
 end
 

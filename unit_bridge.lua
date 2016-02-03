@@ -11,6 +11,9 @@ function _UnitBridge:init()
             local vx, vy, vz = Spring.GetUnitVelocity(objectID)
             return {x = vx, y = vy, z = vz}
         end,
+        mass = function(objectID)
+            return Spring.GetUnitMass(objectID)
+        end,
         dir = function(objectID)
             local dirX, dirY, dirZ = Spring.GetUnitDirection(objectID)
             return {x = dirX, y = dirY, z = dirZ}
@@ -172,6 +175,9 @@ function _UnitBridge:init()
         vel = function(objectID, value)
             Spring.SetUnitVelocity(objectID, value.x, value.y, value.z)
         end,
+        mass = function(objectID, value)
+            Spring.SetUnitMass(objectID, value)
+        end,
         dir = function(objectID, value)
             Spring.SetUnitDirection(objectID, value.x, value.y, value.z)
         end,
@@ -183,7 +189,6 @@ function _UnitBridge:init()
                                                  value.aim.x, value.aim.y, value.aim.z, true)
         end,
         maxRange = function(objectID, value)
-            Spring.SetUnitCrashing(objectID, true)
             Spring.SetUnitMaxRange(objectID, value)
         end,
         blocking = function(objectID, value)
