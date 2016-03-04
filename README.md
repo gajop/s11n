@@ -2,6 +2,9 @@ SpringRTS serialization library.
 
 Design goals
 
+Provide a generic LUA-Api, so Spring.Api using software can drive Unittests against these calls, without the engine running.
+Vice versa it allows for the engine to run API-UnitTests without a specific game particularly crafted to call all available calls with valid values.
+
 API
 ```lua
 s11n:GetUnitBridge() -> s11nUnit
