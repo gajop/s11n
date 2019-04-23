@@ -15,7 +15,7 @@ function gadget:GetInfo()
         name    = "s11n gadget",
         desc    = "Spring serialization library gadget",
         author  = "gajop",
-        license = "GPLv2",
+        license = "MIT",
         layer   = -10000,
         enabled = true,
         handler = true,
@@ -27,7 +27,7 @@ function gadget:Initialize()
     LCS = loadstring(VFS.LoadFile(LCS_FOLDER .. "/LCS.lua"))
     LCS = LCS()
 
-    VFS.Include(S11N_FOLDER .. "/s11n.lua", nil, VFS.DEF_MODE)
+    VFS.Include(S11N_FOLDER .. "/s11n.lua", nil, VFS.ZIP)
     -- Export Gadget Globals
     _s11n = s11n.instance
     GG.s11n = _s11n

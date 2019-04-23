@@ -136,6 +136,34 @@ function _FeatureS11N:OnInit()
                 end
             end,
         },
+        resources = {
+            get = function(objectID)
+                local metal, metalMax, energy, energyMax, reclaimLeft, reclaimTime = Spring.GetFeatureResources(objectID)
+                if reclaimTime ~= nil then
+                    return {
+                        metal = metal,
+                        metalMax = metalMax,
+                        energy = energy,
+                        energyMax = energyMax,
+                        reclaimTime = reclaimTime,
+                        reclaimLeft = reclaimLeft
+                    }
+                else
+                    return {
+                        metal = metal,
+                        energy = energy
+                    }
+                end
+            end,
+            set = function(objectID, value)
+                if value.reclaimLeft then
+                    Spring.SetFeatureResources(objectID, value.metal, value.energy,
+                        value.reclaimTime, value.reclaimLeft,value.metalMax, value.energyMax)
+                else
+                    Spring.SetFeatureResources(objectID, value.metal, value.energy)
+                end
+            end
+        }
         -- modelID = {
         --     get = function(objectID)
         --         return modelIDs[objectID]
@@ -149,13 +177,14 @@ function _FeatureS11N:OnInit()
     self:__AddModelIDField()
 end
 
--- FIXME: objectID not used
+-- FIXME: objectID argument not used
+-- luacheck: ignore 412
 function _FeatureS11N:CreateObject(object, objectID)
     local y = Spring.GetGroundHeight(object.pos.x, object.pos.z)
     local objectID = Spring.CreateFeature(object.defName, object.pos.x, object.pos.y, object.pos.z)
     if y ~= object.pos.y then
         Spring.SetFeatureMoveCtrl(objectID, true)
-        Spring.SetFeatureMoveCtrl(objectID, false)
+        -- Spring.SetFeatureMoveCtrl(objectID, false)
     end
     return objectID
 end
