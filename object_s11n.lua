@@ -350,7 +350,13 @@ end
 function _ObjectS11N:__ReportObjectCreationFail(object)
     Spring.Log(LOG_SECTION, LOG.ERROR, "Failed to create object: ")
     if type(object) == "table" then
-        table.echo(object)
+        if table.echo == nil then
+            for k, v in pairs(object) do
+                Spring.Echo(tostring(k) .. " = " .. tostring(v))
+            end
+        else
+            table.echo(object)
+        end
     else
         Spring.Log(LOG_SECTION, LOG.ERROR, object)
     end
@@ -652,7 +658,13 @@ function _ObjectS11N:Set(...)
             end
         end
     else
-        table.echo(params)
+        if table.echo == nil then
+            for k, v in pairs(object) do
+                Spring.Echo(tostring(k) .. " = " .. tostring(v))
+            end
+        else
+            table.echo(params)
+        end
         error("Invalid parameters: " .. tostring(paramsCount) .. " for s11n:Set")
     end
 end
