@@ -182,7 +182,7 @@ end
 function _FeatureS11N:CreateObject(object, objectID)
     local y = Spring.GetGroundHeight(object.pos.x, object.pos.z)
     local objectID = Spring.CreateFeature(object.defName, object.pos.x, object.pos.y, object.pos.z)
-    if y ~= object.pos.y then
+    if math.abs(y - object.pos.y) >= 0.1 then
         Spring.SetFeatureMoveCtrl(objectID, true)
         -- Spring.SetFeatureMoveCtrl(objectID, false)
     end
