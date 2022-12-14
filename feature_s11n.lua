@@ -163,6 +163,17 @@ function _FeatureS11N:OnInit()
                     Spring.SetFeatureResources(objectID, value.metal, value.energy)
                 end
             end
+        },
+        snapToGround = {
+            get = function(objectID)
+                local px, py, pz = Spring.GetFeaturePosition(objectID)
+
+                local y = Spring.GetGroundHeight(px, pz)
+                return math.abs(y - py) < 0.1
+            end,
+            set = function(objectID, value)
+                Spring.SetFeatureMoveCtrl(objectID, value)
+            end
         }
         -- modelID = {
         --     get = function(objectID)
@@ -182,9 +193,8 @@ end
 function _FeatureS11N:CreateObject(object, objectID)
     local y = Spring.GetGroundHeight(object.pos.x, object.pos.z)
     local objectID = Spring.CreateFeature(object.defName, object.pos.x, object.pos.y, object.pos.z)
-    if math.abs(y - object.pos.y) >= 0.1 then
+    if not object.snapToGround and math.abs(y - object.pos.y) >= 0.1 then
         Spring.SetFeatureMoveCtrl(objectID, true)
-        -- Spring.SetFeatureMoveCtrl(objectID, false)
     end
     return objectID
 end
