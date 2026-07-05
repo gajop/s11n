@@ -40,7 +40,28 @@ function _ObjectS11N:__AddModelIDField()
     }
 end
 
+function _ObjectS11N:__FlushPendingModelIDDelete(modelID)
+    if modelID == nil or self.__s2mToDelete == nil then
+        return
+    end
+
+    local remaining = {}
+    for _, objectID in pairs(self.__s2mToDelete) do
+        if self.__s2m[objectID] == modelID then
+            self.__s2m[objectID] = nil
+            if self.__m2s[modelID] == objectID then
+                self.__m2s[modelID] = nil
+            end
+        else
+            table.insert(remaining, objectID)
+        end
+    end
+    self.__s2mToDelete = remaining
+end
+
 function _ObjectS11N:__Added(objectID, modelID)
+    self:__FlushPendingModelIDDelete(modelID)
+
     local currModelID = self.__s2m[objectID]
 
     -- If object is already assigned, we should just update the field.
