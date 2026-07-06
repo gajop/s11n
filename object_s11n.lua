@@ -92,10 +92,18 @@ function _ObjectS11N:__Added(objectID, modelID)
     end
 
     if self.__m2s[modelID] then
-        Spring.Log(LOG_SECTION, LOG.WARNING,
-            string.format("[%s] Trying to register %s with existing modelID. Spring ID: %d Model ID: %d",
-            Script.GetName(), self.__name, modelID, self.__m2s[modelID]))
-        return
+        local existingObjectID = self.__m2s[modelID]
+        if existingObjectID == objectID then
+            return
+        end
+        if Script.GetName() == "LuaUI" then
+            self.__s2m[existingObjectID] = nil
+        else
+            Spring.Log(LOG_SECTION, LOG.WARNING,
+                string.format("[%s] Trying to register %s with existing modelID. Spring ID: %d Model ID: %d",
+                Script.GetName(), self.__name, objectID, modelID))
+            return
+        end
     end
 
     self.__s2m[objectID] = modelID
